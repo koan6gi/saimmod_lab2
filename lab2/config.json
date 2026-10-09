@@ -1,0 +1,34 @@
+{
+  "simulation": {
+    "run_time": 60.0,
+    "with_clearance": true,
+    "seed": 42,
+    "trace": false,
+    "num_replications": 1000,
+    "warmup_buyers": 2
+  },
+  "arrival": {
+    "mean_interval": 1.0,
+    "distribution": "exponential"
+  },
+  "supermarket": {
+    "num_departments": 5,
+    "department_names": [
+      "Бакалея",
+      "Молочный",
+      "Мясной",
+      "Овощи и фрукты",
+      "Кулинария"
+    ],
+    "service_time": {
+      "mean": 1.8,
+      "std": 0.5,
+      "min_time": 0.4
+    },
+    "departments_per_buyer": {
+      "min_count": 1,
+      "max_count": 5,
+      "mode_count": 3
+    }
+  }
+}

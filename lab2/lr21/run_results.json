@@ -1,0 +1,14 @@
+{
+  "avg_time_in_supermarket": 19.766583250897895,
+  "std_time_in_supermarket": 10.649073041222698,
+  "avg_queue_wait_time": 20.189372031209437,
+  "avg_departments_visited": 3.15625,
+  "avg_total_queue_len": 10.350163117259164,
+  "avg_busy_sellers": 4.073876046439209,
+  "seller_utilization_pct": 81.47752092878419,
+  "avg_buyers_in_supermarket": 14.424039163698366,
+  "total_arrivals": 64,
+  "total_served": 64,
+  "total_transactions": 202,
+  "simulation_end_time": 87.7050674710661
+}
