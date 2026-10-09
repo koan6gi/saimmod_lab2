@@ -117,4 +117,6 @@ def generate_diagram(output_path):
     print(f"Diagram saved to {output_path}")
 
 if __name__ == "__main__":
-    generate_diagram("d:/Универ/сиамод/lab2_v5/plots/diagram_flow.png")
+    import os
+    default_out = os.path.abspath(os.path.join(os.path.dirname(__file__), "plots", "diagram_flow.png"))
+    generate_diagram(default_out)

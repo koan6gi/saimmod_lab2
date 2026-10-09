@@ -1,5 +1,9 @@
 import os
+import sys
 import docx
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
@@ -62,6 +66,15 @@ def create_lr21_docx(output_path: str, base_dir: str):
         p_cap.runs[0].font.size = Pt(9)
         p_cap.runs[0].font.italic = True
 
+    timeline_path = os.path.join(base_dir, "plots", "diagram_quasiparallel.png")
+    if os.path.exists(timeline_path):
+        doc.add_paragraph("Временная диаграмма квазипараллельного взаимодействия и синхронизации календаря событий:")
+        doc.add_picture(timeline_path, width=Inches(6.2))
+        p_cap2 = doc.add_paragraph("Рис. 2. Временная диаграмма квазипараллелизма (по лекции 2, слайд 15)")
+        p_cap2.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_cap2.runs[0].font.size = Pt(9)
+        p_cap2.runs[0].font.italic = True
+
     # Section 2: Input parameters table
     doc.add_heading("2. Таблица входных параметров модели", level=1)
     table_data = [
@@ -93,7 +106,7 @@ def create_lr21_docx(output_path: str, base_dir: str):
         "1. Дискретные отклики:\n"
         "   • Среднее время в супермаркете (T_sys): 19.77 мин\n"
         "   • СКО времени пребывания: 10.65 мин\n"
-        "   • Среднее время ожидания в очередях: 20.19 мин\n"
+        "   • Среднее время ожидания в очередях: 14.18 мин\n"
         "   • Среднее число отделов на покупателя: 3.16\n\n"
         "2. Непрерывные отклики:\n"
         "   • Средняя суммарная длина очередей (L_q): 10.35 чел.\n"
@@ -193,12 +206,13 @@ def create_lr22_docx(output_path: str, base_dir: str):
 
     doc.add_heading("4. Результаты автоматических юнит-тестов", level=1)
     unit_text = (
-        "Разработан и успешно выполнен пакет из 5 верификационных тестов:\n"
+        "Разработан и успешно выполнен пакет из 6 верификационных тестов:\n"
         "1. test_reproducibility: идентичность числовых откликов при совпадении seed (ОК);\n"
         "2. test_clearance_completes_all_buyers: гарантия обслуживания всех вошедших клиентов (ОК);\n"
         "3. test_monotonicity_arrival_rate: строгий монотонный рост очередей при росте lambda (ОК);\n"
         "4. test_monotonicity_service_time: монотонный рост времени в системе при росте mu_serv (ОК);\n"
-        "5. test_littles_law_qualitative: соответствие фундаментальному закону Литтла N_sys = lambda * T_sys (ОК)."
+        "5. test_queue_wait_time_validity: физический баланс времени (W_q < T_sys, разница равна времени на кассах) (ОК);\n"
+        "6. test_littles_law_qualitative: соответствие фундаментальному закону Литтла N_sys = lambda * T_sys (ОК)."
     )
     doc.add_paragraph(unit_text)
 
@@ -213,6 +227,6 @@ def create_lr22_docx(output_path: str, base_dir: str):
 
 
 if __name__ == "__main__":
-    base = "d:/Универ/сиамод/lab2_v5"
+    base = os.path.abspath(os.path.dirname(__file__))
     create_lr21_docx(os.path.join(base, "lr21", "report_lr21.docx"), base)
     create_lr22_docx(os.path.join(base, "lr22", "report_lr22.docx"), base)

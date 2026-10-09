@@ -1,8 +1,12 @@
 import os
+import sys
 import random
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 from src.config import Config, load_config
 from src.simulation import SupermarketSimulation
@@ -97,14 +101,15 @@ def create_excel_report(output_file: str = "supermarket_simulation.xlsx", num_re
         cell.alignment = Alignment(horizontal="center")
 
     print(f"Запуск {num_replications} репликаций для таблицы Excel...")
-    base_config = load_config()
+    cfg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "config.json"))
+    base_config = load_config(cfg_path)
     base_config.simulation.trace = False
     
     first_sim_discrete_history = []
     first_sim_continuous_history = []
 
     for r in range(1, num_replications + 1):
-        cfg = load_config()
+        cfg = load_config(cfg_path)
         cfg.simulation.seed = 42 + r * 101
         cfg.simulation.trace = False
         sim = SupermarketSimulation(cfg)
@@ -170,4 +175,5 @@ def create_excel_report(output_file: str = "supermarket_simulation.xlsx", num_re
 
 
 if __name__ == "__main__":
-    create_excel_report("d:/Универ/сиамод/lab2_v5/supermarket_simulation.xlsx", num_replications=1000)
+    default_out = os.path.abspath(os.path.join(os.path.dirname(__file__), "supermarket_simulation.xlsx"))
+    create_excel_report(default_out, num_replications=1000)

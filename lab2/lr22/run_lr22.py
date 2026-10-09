@@ -27,8 +27,12 @@ def setup_plot_style():
 
 
 def run_verification_study(plots_dir: str, data_path: str):
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
     os.makedirs(plots_dir, exist_ok=True)
     setup_plot_style()
+    cfg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config.json"))
 
     print("================================================================================")
     print("   ЛАБОРАТОРНАЯ РАБОТА №2.2 (LR22) — ВЕРИФИКАЦИЯ ИМИТАЦИОННОЙ МОДЕЛИ           ")
@@ -39,7 +43,7 @@ def run_verification_study(plots_dir: str, data_path: str):
     # 1. ДИНАМИКА ОТКЛИКОВ В МОДЕЛЬНОМ ВРЕМЕНИ (КОНТРОЛЬНЫЙ ПРОГОН)
     # ---------------------------------------------------------
     print("\n[Этап 1] Моделирование контрольного прогона для динамических графиков...")
-    cfg_base = load_config("config.json")
+    cfg_base = load_config(cfg_path)
     cfg_base.simulation.seed = 42
     cfg_base.simulation.trace = False
     sim_base = SupermarketSimulation(cfg_base)
@@ -121,7 +125,7 @@ def run_verification_study(plots_dir: str, data_path: str):
     rep_sellers = []
 
     for r in range(1, N_REPS + 1):
-        cfg_r = load_config("config.json")
+        cfg_r = load_config(cfg_path)
         cfg_r.simulation.seed = 1000 + r * 37
         cfg_r.simulation.trace = False
         sim_r = SupermarketSimulation(cfg_r)
@@ -170,8 +174,8 @@ def run_verification_study(plots_dir: str, data_path: str):
         batch_times = []
         batch_queues = []
         batch_util = []
-        for seed_offset in range(15):
-            cfg_v = load_config("config.json")
+        for seed_offset in range(80):
+            cfg_v = load_config(cfg_path)
             cfg_v.arrival.mean_interval = mi
             cfg_v.simulation.seed = 200 + seed_offset * 19
             cfg_v.simulation.trace = False
@@ -218,8 +222,8 @@ def run_verification_study(plots_dir: str, data_path: str):
     for sm in service_means:
         batch_times = []
         batch_queues = []
-        for seed_offset in range(15):
-            cfg_s = load_config("config.json")
+        for seed_offset in range(80):
+            cfg_s = load_config(cfg_path)
             cfg_s.supermarket.service_time.mean = sm
             cfg_s.simulation.seed = 300 + seed_offset * 23
             cfg_s.simulation.trace = False

@@ -95,17 +95,18 @@
 
 ## 5. Автоматические верификационные тесты (`tests_verification.py`)
 
-Для формальной проверки программного кода разработан набор из 5 юнит-тестов (`unittest`):
+Для формальной проверки программного кода разработан набор из 6 юнит-тестов (`unittest`):
 
 ```text
 test_clearance_completes_all_buyers ... ok
 test_littles_law_qualitative ... ok
 test_monotonicity_arrival_rate ... ok
 test_monotonicity_service_time ... ok
+test_queue_wait_time_validity ... ok
 test_reproducibility ... ok
 
 ----------------------------------------------------------------------
-Ran 5 tests in 0.056s
+Ran 6 tests in 0.075s
 
 OK
 ```
@@ -114,7 +115,8 @@ OK
 2. **`test_clearance_completes_all_buyers`:** Проверка фазы дообслуживания. Гарантирует, что $N_{served} \equiv N_{arrivals}$ (ни один покупатель не теряется в системе).
 3. **`test_monotonicity_arrival_rate`:** Проверка первого физического критерия: $\partial L_q / \partial \lambda > 0$.
 4. **`test_monotonicity_service_time`:** Проверка второго физического критерия: $\partial T_{sys} / \partial \mu_{serv} > 0$.
-5. **`test_littles_law_qualitative`:** Проверка закона Литтла ($\bar{N}_{sys} \approx \lambda \cdot \bar{T}_{sys}$). Расхождение эмпирических величин не превышает допустимой погрешности переходного периода.
+5. **`test_queue_wait_time_validity`:** Проверка физического баланса времени: время ожидания в очередях строго меньше общего времени в магазине ($0 < W_q < T_{sys}$), а их разность в точности равна чистому времени обслуживания на кассах.
+6. **`test_littles_law_qualitative`:** Проверка закона Литтла ($\bar{N}_{sys} \approx \lambda \cdot \bar{T}_{sys}$). Расхождение эмпирических величин не превышает допустимой погрешности переходного периода.
 
 ---
 

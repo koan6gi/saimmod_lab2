@@ -280,23 +280,25 @@
 > *Ответ:* Верификация подтверждается тремя факторами:
 > 1. Сходимостью оценок при 1000 репликациях;
 > 2. Физической адекватностью и монотонностью откликов при вариации параметров ($\lambda$ и $\mu_{serv}$);
-> 3. Успешным прохождением всех 5 автоматических юнит-тестов (`tests_verification.py`).
+> 3. Успешным прохождением всех 6 автоматических юнит-тестов (`tests_verification.py`), включая баланс времени пребывания и ожидания.
 
 ---
 
 ## 10. Где лежат все файлы и как их запустить
 
-Все файлы лабораторной работы изолированы в директории: `d:\Универ\сиамод\lab2_v5\`
+Все файлы лабораторной работы изолированы в директории: `lab2/` (`d:\storage\university\saimmod\saimmod_lab2\lab2\`)
 
 ```text
-lab2_v5/
+lab2/
 ├── config.json                     # Конфигурация параметров модели
 ├── supermarket_simulation.xlsx     # Таблица Excel (input, responses, траектории)
 ├── generate_diagram.py             # Скрипт генерации потоковой диаграммы
+├── generate_timeline_diagram.py    # Скрипт генерации временной диаграммы (слайд 15)
 ├── generate_excel.py               # Скрипт генерации Excel файла
 ├── generate_docx_reports.py        # Скрипт генерации Word-отчетов
 ├── LR0_CONCEPTUAL_MODEL.md         # 📄 Отчет LR0 (Концептуальная модель)
 ├── EXPLANATION.md                  # 📘 Данное методическое руководство
+├── THEORY_AND_EXPLANATION.md       # 🎓 Подробнейшее объяснение теории "с нуля"
 │
 ├── src/                            # Исходный код ядра модели
 │   ├── config.py                   # Загрузка настроек
@@ -309,19 +311,20 @@ lab2_v5/
 ├── lr21/                           # 🥇 Часть 1 (LR21 / LR1)
 │   ├── run_lr21.py                 # Запуск контрольного прогона
 │   ├── REPORT_LR21.md              # Отчет LR21 в Markdown
-│   ├── report_lr21.docx            # Отчет LR21 в Word (с таблицами)
+│   ├── report_lr21.docx            # Отчет LR21 в Word (с таблицами и диаграммами)
 │   ├── run_results.json            # Данные контрольного прогона
 │   └── trace.log                   # Полный лог трассировки событий
 │
 ├── lr22/                           # 🥈 Часть 2 (LR22 / LR2: Верификация)
 │   ├── run_lr22.py                 # Запуск 1000 прогонов и генерация графиков
-│   ├── tests_verification.py       # Автоматические юнит-тесты
+│   ├── tests_verification.py       # Автоматические юнит-тесты (6 тестов)
 │   ├── REPORT_LR22.md              # Отчет LR22 в Markdown
 │   ├── report_lr22.docx            # Отчет LR22 в Word (с графиками)
 │   └── verification_data.json      # Статистика верификационных экспериментов
 │
 └── plots/                          # 📊 Графики верификации (300 DPI)
     ├── diagram_flow.png            # Потоковая диаграмма супермаркета
+    ├── diagram_quasiparallel.png   # Временная диаграмма квазипараллелизма (слайд 15)
     ├── dynamics_time_in_supermarket.png
     ├── dynamics_queue_length.png
     ├── dynamics_sellers_utilization.png
@@ -330,16 +333,23 @@ lab2_v5/
     └── variation_service_time.png
 ```
 
-### Команды для быстрого запуска из консоли:
+### Команды для запуска через `uv` из корня проекта:
 ```powershell
-cd "d:\Универ\сиамод\lab2_v5"
-
 # 1. Запуск контрольного прогона LR21 с трассировкой:
-python lr21/run_lr21.py --time 60 --seed 42 --trace
+uv run python lab2/lr21/run_lr21.py --time 60 --seed 42 --trace
 
-# 2. Запуск верификационных юнит-тестов LR22:
-python lr22/tests_verification.py
+# 2. Запуск верификационных юнит-тестов LR22 (все 6 тестов):
+uv run python lab2/lr22/tests_verification.py
 
-# 3. Запуск полного цикла верификации (1000 репликаций и графики):
-python lr22/run_lr22.py
+# 3. Запуск полного цикла верификации LR22 (1000 репликаций и построение графиков):
+uv run python lab2/lr22/run_lr22.py
+
+# 4. Перегенерация диаграммы квазипараллелизма:
+uv run python lab2/generate_timeline_diagram.py
+
+# 5. Перегенерация Excel таблицы:
+uv run python lab2/generate_excel.py
+
+# 6. Перегенерация Word-отчетов:
+uv run --with python-docx python lab2/generate_docx_reports.py
 ```

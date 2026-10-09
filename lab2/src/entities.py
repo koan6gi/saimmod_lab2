@@ -67,9 +67,9 @@ class Department:
         customer.queue_enter_time = current_time
         self.queue.append(customer)
 
-    def start_service(self, customer: Customer, current_time: float) -> float:
+    def start_service(self, customer: Customer, current_time: float, from_queue: bool = False) -> float:
         self.current_customer = customer
-        wait_time = current_time - customer.queue_enter_time
+        wait_time = (current_time - customer.queue_enter_time) if from_queue else 0.0
         customer.total_wait_time += wait_time
         return wait_time
 

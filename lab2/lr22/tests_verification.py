@@ -81,6 +81,19 @@ class TestSupermarketVerification(unittest.TestCase):
         rel_diff = abs(expected_in_system - actual_in_system) / actual_in_system
         self.assertLess(rel_diff, 0.25)
 
+    def test_queue_wait_time_validity(self):
+        """Проверка физического баланса времени: время ожидания в очередях строго меньше общего времени в магазине"""
+        cfg = load_config("config.json")
+        cfg.simulation.seed = 42
+        res = SupermarketSimulation(cfg).run()
+
+        # Время в очередях не может превышать суммарное время в магазине
+        self.assertGreater(res["avg_queue_wait_time"], 0.0)
+        self.assertLess(res["avg_queue_wait_time"], res["avg_time_in_supermarket"])
+        # Разница должна соответствовать чистому времени обслуживания
+        net_service = res["avg_time_in_supermarket"] - res["avg_queue_wait_time"]
+        self.assertGreater(net_service, 1.0)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

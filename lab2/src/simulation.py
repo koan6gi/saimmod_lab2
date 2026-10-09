@@ -81,14 +81,14 @@ class SupermarketSimulation:
     def _send_customer_to_department(self, customer: Customer, dept_id: int) -> None:
         dept = self.departments[dept_id]
         if not dept.is_busy:
-            # Продавец свободен -> немедленное начало обслуживания
-            wait_time = dept.start_service(customer, self.current_time)
+            # Продавец свободен -> немедленное начало обслуживания (ожидание в очереди = 0)
+            wait_time = dept.start_service(customer, self.current_time, from_queue=False)
             serv_time = self._sample_service_time()
             customer.total_service_time += serv_time
             
             self._log(
                 f"Покупатель #{customer.customer_id} начал обслуживание в '{dept.name}' "
-                f"(длительность: {serv_time:.2f} мин, ожидание: {wait_time:.2f} мин)"
+                f"(длительность: {serv_time:.2f} мин, ожидание: 0.00 мин)"
             )
             self.event_queue.schedule(
                 time=self.current_time + serv_time,
@@ -175,7 +175,7 @@ class SupermarketSimulation:
         # Вызываем следующего покупателя из очереди освободившегося отдела (FIFO)
         if dept.queue_length > 0:
             next_customer = dept.queue.pop(0)
-            wait_time = dept.start_service(next_customer, self.current_time)
+            wait_time = dept.start_service(next_customer, self.current_time, from_queue=True)
             serv_time = self._sample_service_time()
             next_customer.total_service_time += serv_time
 
