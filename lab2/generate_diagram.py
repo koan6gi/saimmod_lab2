@@ -43,7 +43,7 @@ def generate_diagram(output_path: str):
     triangle = patches.Polygon(xy=list(zip(tri_x, tri_y)), closed=True,
                                facecolor="#EFF6FF", edgecolor=border_color, linewidth=2)
     ax.add_patch(triangle)
-    ax.text(0.7, 3.4, "Входной поток\nпокупателей\n($\\lambda=0.5$ мин$^{-1}$, Exp)",
+    ax.text(0.7, 3.4, "Входной поток\nпокупателей\n($\\lambda=1.0$ мин$^{-1}$, Exp)",
             ha="center", va="top", fontsize=8.5, fontweight="bold", color="#1E293B")
 
     # Стрелка от источника к торговому залу
@@ -113,7 +113,7 @@ def generate_diagram(output_path: str):
         ax.add_patch(terminal)
         ax.text(serv_x + serv_w / 2, y_c + 0.1, name, ha="center", va="center",
                 fontsize=9, fontweight="bold", color="#0F172A")
-        ax.text(serv_x + serv_w / 2, y_c - 0.16, "1 продавец ($T_{serv} \\sim N(1.5, 0.4)$ мин)",
+        ax.text(serv_x + serv_w / 2, y_c - 0.16, "1 продавец ($T_{serv} \\sim N(1.8, 0.5)$ мин)",
                 ha="center", va="center", fontsize=7.2, color="#475569")
 
         # Линия выхода из прибора к вертикальной шине сбора
