@@ -6,6 +6,13 @@
   "avg_total_queue_len": 10.350163117259164,
   "avg_busy_sellers": 4.073876046439209,
   "seller_utilization_pct": 81.47752092878419,
+  "dept_utilizations": [
+    0.9754316482653923,
+    0.8278862675131586,
+    0.7523276120126645,
+    0.6721386032689498,
+    0.8460919153790447
+  ],
   "avg_buyers_in_supermarket": 14.424039163698366,
   "total_arrivals": 64,
   "total_served": 64,

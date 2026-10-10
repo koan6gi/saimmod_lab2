@@ -111,12 +111,16 @@ class StatisticsCollector:
         self.total_arrivals = 0
         self.total_served = 0
         self.total_department_transactions = 0
+        self.arrivals_history: List[Tuple[float, int]] = [(0.0, 0)]
+        self.served_history: List[Tuple[float, int]] = [(0.0, 0)]
 
         # 4. Финальные отклики
         self.simulation_end_time = 0.0
 
     def finalize(self, current_time: float) -> None:
         self.simulation_end_time = current_time
+        self.arrivals_history.append((current_time, self.total_arrivals))
+        self.served_history.append((current_time, self.total_served))
         self.total_queue_len.finalize(current_time)
         self.busy_sellers_count.finalize(current_time)
         self.buyers_in_supermarket.finalize(current_time)
@@ -136,6 +140,7 @@ class StatisticsCollector:
             "avg_total_queue_len": self.total_queue_len.mean,
             "avg_busy_sellers": self.busy_sellers_count.mean,
             "seller_utilization_pct": (self.busy_sellers_count.mean / 5.0) * 100.0,
+            "dept_utilizations": [u.mean for u in self.dept_utilization],
             "avg_buyers_in_supermarket": self.buyers_in_supermarket.mean,
             # Аддитивные
             "total_arrivals": self.total_arrivals,
