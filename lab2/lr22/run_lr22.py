@@ -1,7 +1,8 @@
 import os
 import sys
 import json
-from typing import Dict, List
+import argparse
+from typing import Dict, List, Optional
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -34,24 +35,26 @@ def setup_plot_style():
     })
 
 
-def run_verification_study(plots_dir: str, data_path: str):
+def run_verification_study(plots_dir: str, data_path: str, num_replications: Optional[int] = None):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
 
     os.makedirs(plots_dir, exist_ok=True)
     setup_plot_style()
     cfg_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config.json"))
+    cfg_base = load_config(cfg_path)
+    N_REPS = int(num_replications) if num_replications is not None else int(cfg_base.simulation.num_replications)
 
     print("================================================================================")
     print("   ЛАБОРАТОРНАЯ РАБОТА №2.2 (LR22) — ВЕРИФИКАЦИЯ ИМИТАЦИОННОЙ МОДЕЛИ           ")
     print("   Вариант №5: Мини-супермаркет с раздельным обслуживанием                     ")
     print("================================================================================")
+    print(f"Параметры: Серия репликаций = {N_REPS}, Папка графиков: {plots_dir}")
 
     # ---------------------------------------------------------
     # 1. ДИНАМИКА ОТКЛИКОВ В МОДЕЛЬНОМ ВРЕМЕНИ (КОНТРОЛЬНЫЙ ПРОГОН)
     # ---------------------------------------------------------
     print("\n[Этап 1] Моделирование контрольного прогона для динамических графиков...")
-    cfg_base = load_config(cfg_path)
     cfg_base.simulation.seed = 42
     cfg_base.simulation.trace = False
     sim_base = SupermarketSimulation(cfg_base)
@@ -144,10 +147,9 @@ def run_verification_study(plots_dir: str, data_path: str):
     print(f" -> Сохранен ансамблевый дашборд: {multi_run_path}")
 
     # ---------------------------------------------------------
-    # 3. СХОДИМОСТЬ ПРИ ПОВТОРНЫХ ПРОГОНАХ (1000 РЕПЛИКАЦИЙ)
+    # 3. СХОДИМОСТЬ ПРИ ПОВТОРНЫХ ПРОГОНАХ
     # ---------------------------------------------------------
-    print("\n[Этап 3] Серия из 1000 независимых репликаций для проверки ЗБЧ...")
-    N_REPS = 1000
+    print(f"\n[Этап 3] Серия из {N_REPS} независимых репликаций для проверки ЗБЧ...")
     rep_results = []
     rep_means_time = []
     rep_means_queue = []
@@ -355,6 +357,14 @@ def run_verification_study(plots_dir: str, data_path: str):
 
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+
+    parser = argparse.ArgumentParser(description="LR22: Верификация имитационной модели супермаркета (Вариант №5)")
+    parser.add_argument("--replications", "-n", type=int, default=None,
+                        help="Число независимых репликаций (по умолчанию из config.json, 1000)")
+    args = parser.parse_args()
+
     plots_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "plots"))
     data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "verification_data.json"))
-    run_verification_study(plots_dir, data_path)
+    run_verification_study(plots_dir, data_path, num_replications=args.replications)
