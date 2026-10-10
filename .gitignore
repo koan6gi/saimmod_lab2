@@ -1,0 +1,19 @@
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Local sample code
+code/
