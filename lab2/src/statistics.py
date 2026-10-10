@@ -28,7 +28,7 @@ class ContinuousStatistic:
         if dt > 0:
             self.time_integral += self.current_value * dt
             cum_avg = self.time_integral / current_time if current_time > 0 else 0.0
-            self.history.append(TimePoint(current_time, self.current_value, cum_avg))
+            self.history.append(TimePoint(current_time, new_value, cum_avg))
 
         self.current_value = new_value
         self.last_update_time = current_time
