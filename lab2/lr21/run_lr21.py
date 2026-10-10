@@ -15,16 +15,21 @@ def main():
         sys.stdout.reconfigure(encoding="utf-8")
 
     parser = argparse.ArgumentParser(description="LR21: Запуск имитационной модели супермаркета (Вариант №5)")
-    parser.add_argument("--time", type=float, default=60.0, help="Длительность прогона в минутах (по умолчанию 60.0)")
-    parser.add_argument("--seed", type=int, default=42, help="Базовое зерно ДСЧ (по умолчанию 42)")
-    parser.add_argument("--trace", action="store_true", default=True, help="Включить подробную трассировку событий в лог")
+    parser.add_argument("--time", type=float, default=None, help="Длительность прогона в минутах (по умолчанию из config.json)")
+    parser.add_argument("--seed", type=int, default=None, help="Базовое зерно ДСЧ (по умолчанию из config.json)")
+    parser.add_argument("--trace", action="store_true", default=None, help="Включить подробную трассировку событий в лог")
     args = parser.parse_args()
 
     cfg_file = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "config.json"))
     config = load_config(cfg_file)
-    config.simulation.run_time = args.time
-    config.simulation.seed = args.seed
-    config.simulation.trace = args.trace
+    if args.time is not None:
+        config.simulation.run_time = args.time
+    if args.seed is not None:
+        config.simulation.seed = args.seed
+    if args.trace is not None:
+        config.simulation.trace = args.trace
+    else:
+        config.simulation.trace = True  # Для ЛР2.1 по умолчанию трассировка активна
 
     trace_log_path = os.path.join(os.path.dirname(__file__), "trace.log")
     results_json_path = os.path.join(os.path.dirname(__file__), "run_results.json")

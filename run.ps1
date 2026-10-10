@@ -6,10 +6,10 @@ param(
 
 switch ($Target.ToLower()) {
     "lr21" {
-        Write-Host ">>> [LR21] Generating diagrams & running 60-min trace..." -ForegroundColor Cyan
+        Write-Host ">>> [LR21] Generating diagrams & running simulation trace..." -ForegroundColor Cyan
         uv run python lab2/generate_diagram.py
         uv run python lab2/generate_timeline_diagram.py
-        uv run python lab2/lr21/run_lr21.py --time 60 --seed 42 --trace
+        uv run python lab2/lr21/run_lr21.py
     }
     "lab1" {
         & $PSCommandPath lr21
@@ -48,7 +48,7 @@ switch ($Target.ToLower()) {
         uv run python -m unittest lab2/lr22/tests_verification.py
         uv run python lab2/generate_diagram.py
         uv run python lab2/generate_timeline_diagram.py
-        uv run python lab2/lr21/run_lr21.py --time 60 --seed 42 --trace
+        uv run python lab2/lr21/run_lr21.py
         uv run python lab2/lr22/run_lr22.py
         uv run python lab2/generate_excel.py
         Write-Host ">>> ALL DATA AND PLOTS GENERATED SUCCESSFULLY!" -ForegroundColor Green

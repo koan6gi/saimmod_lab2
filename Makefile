@@ -15,7 +15,7 @@ lab1: lr21
 lab2: lr22
 
 lr21: diagrams
-	uv run python lab2/lr21/run_lr21.py --time 60 --seed 42 --trace
+	uv run python lab2/lr21/run_lr21.py
 
 lr22: test
 	uv run python lab2/lr22/run_lr22.py
