@@ -236,7 +236,7 @@ def plot_multi_run(sim_runs: Sequence[Any], out_dir: Path | str, name: str = "mu
     final_s = ens_sellers[-1]
     ax.axhline(final_s, color=INK2, linestyle=":", linewidth=1.2,
                label=f"Установившийся уровень: {final_s:.2f} (из 5)")
-    ax.set_ylim(-0.1, 4.0)
+    ax.set_ylim(-0.1, 5.2)
     ax.set_title("Использование продавцов 5 отделов $\\bar{N}_{busy}(t)$")
     ax.set_xlabel("Модельное время $t$, мин")
     ax.set_ylabel("Число занятых продавцов")
@@ -271,7 +271,9 @@ def plot_run_to_run(results_list: Sequence[Dict[str, float]], out_dir: Path | st
     for ax, key, title, unit, color in configs:
         vals = np.array([r[key] for r in results_list])
         cum_mean = np.cumsum(vals) / n
-        ax.scatter(n, vals, color=color, alpha=0.35, s=12, label="Значение в прогоне")
+        pt_size = 3.5 if len(results_list) > 150 else 12
+        pt_alpha = 0.20 if len(results_list) > 150 else 0.35
+        ax.scatter(n, vals, color=color, alpha=pt_alpha, s=pt_size, label="Значение в прогоне")
         ax.plot(n, cum_mean, color=INK, linewidth=2.2, label=f"Кумулятивное среднее ({cum_mean[-1]:.2f})")
         # 95% доверительный интервал для среднего
         if len(vals) > 5:

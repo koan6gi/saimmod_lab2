@@ -171,8 +171,8 @@ def run_verification_study(plots_dir: str, data_path: str, num_replications: Opt
 
     mean_dept_utils = [u / N_REPS for u in dept_utils_accum]
 
-    # Академический дашборд сходимости run-to-run (первые 60 прогонов для четкости точек)
-    run_to_run_path = plot_run_to_run(rep_results[:60], plots_dir, "run_to_run.png")
+    # Академический дашборд сходимости run-to-run по всей серии независимых репликаций
+    run_to_run_path = plot_run_to_run(rep_results, plots_dir, "run_to_run.png")
     print(f" -> Сохранен дашборд сходимости по репликациям: {run_to_run_path}")
 
     # График сходимости (1000 репликаций)
