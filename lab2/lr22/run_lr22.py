@@ -308,7 +308,17 @@ def run_verification_study(plots_dir: str, data_path: str, num_replications: Opt
     # 5. СРАВНЕНИЕ ЗАГРУЗКИ ОБОРУДОВАНИЯ (SIMULATION VS THEORY)
     # ---------------------------------------------------------
     print("\n[Этап 6] Построение диаграммы загрузки отделов (моделирование vs теория)...")
-    theoretical_load = 0.80  # расчетная эффективная загрузка при lambda=1.0, tau=1.8
+    # Динамический теоретический расчет загрузки по теории сетей массового обслуживания (СМО)
+    # с учетом вероятности посещения отделов и фазы дообслуживания:
+    bp = cfg_base.supermarket.departments_per_buyer
+    exp_basket = (bp.min_count + bp.max_count + bp.mode_count) / 3.0
+    p_dept = exp_basket / cfg_base.supermarket.num_departments
+    tau_serv = cfg_base.supermarket.service_time.mean
+    mean_arrivals = float(np.mean([r["total_arrivals"] for r in rep_results]))
+    mean_t_fin = float(np.mean([r["simulation_end_time"] for r in rep_results]))
+    theoretical_load = min(1.0, (mean_arrivals * p_dept * tau_serv) / mean_t_fin)
+    print(f" -> Динамическая теоретическая загрузка rho_theo = {theoretical_load:.4f} (Sim среднее = {np.mean(mean_dept_utils):.4f})")
+
     util_path = plot_utilization(
         dept_utilizations=mean_dept_utils,
         dept_names=cfg_base.supermarket.department_names,

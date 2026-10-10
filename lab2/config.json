@@ -1,6 +1,6 @@
 {
   "simulation": {
-    "run_time": 60.0,
+    "run_time": 300.0,
     "with_clearance": true,
     "seed": 42,
     "trace": false,
