@@ -113,6 +113,7 @@ class SupermarketSimulation:
         )
         self.customers[cid] = customer
         self.stats.total_arrivals += 1
+        self.stats.arrivals_history.append((self.current_time, self.stats.total_arrivals))
         
         basket_str = ", ".join(self.departments[i].name for i in basket)
         prefix = "СТАРТОВЫЙ" if is_warmup else "ВХОД"
@@ -162,6 +163,7 @@ class SupermarketSimulation:
             # Покупатель завершил все покупки и покидает супермаркет
             customer.completion_time = self.current_time
             self.stats.total_served += 1
+            self.stats.served_history.append((self.current_time, self.stats.total_served))
             self.stats.time_in_supermarket.record(customer.time_in_supermarket, self.current_time)
             self.stats.total_queue_wait_time.record(customer.total_wait_time, self.current_time)
             self.stats.departments_visited.record(len(customer.departments_to_visit), self.current_time)

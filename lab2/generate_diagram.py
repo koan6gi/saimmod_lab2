@@ -1,122 +1,183 @@
+import os
+import sys
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import numpy as np
 
-def generate_diagram(output_path):
-    fig, ax = plt.subplots(figsize=(13, 7.5), dpi=300)
-    ax.set_xlim(0, 13)
-    ax.set_ylim(0, 7.5)
-    ax.axis('off')
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
-    # Color palette - clean academic style
-    bg_box = '#F8FAFC'
-    border_color = '#1E293B'
-    accent_blue = '#2563EB'
-    queue_color = '#475569'
 
-    # 1. Entrance triangle (Source of customers)
-    tri_x = [0.4, 0.4, 1.1]
-    tri_y = [4.1, 3.3, 3.7]
+def generate_diagram(output_path: str):
+    """
+    Генерация концептуальной схемы СМО супермаркета в соответствии со Слайдом 6 лекции (lec2.pptx).
+    Канонические графические элементы теории массового обслуживания:
+    - Треугольник: Источник заявок (Входной поток клиентов)
+    - Полосатый прямоугольник: Накопитель / Очередь FIFO
+    - Прямоугольник канала: Обслуживающий аппарат (Продавец)
+    - Ромб / разветвитель: Узел маршрутизации по отделам
+    - Терминальный блок: Выход из системы
+    """
+    fig, ax = plt.subplots(figsize=(14.5, 8.8), dpi=300)
+    ax.set_xlim(-0.5, 14.5)
+    ax.set_ylim(-0.2, 8.8)
+    ax.axis("off")
+
+    # Палитра
+    bg_container = "#F8FAFC"
+    border_color = "#1E293B"
+    accent_blue = "#2563EB"
+    amber_loop = "#D97706"
+    green_exit = "#16A34A"
+    green_bg = "#DCFCE7"
+
+    # Заголовок схемы
+    ax.text(7.0, 8.55, "Структурная схема имитационной модели супермаркета (СМО сетей обслуживания)",
+            ha="center", va="center", fontsize=13, fontweight="bold", color="#0F172A")
+    ax.text(7.0, 8.25, "Каноническое представление по Слайду 6 лекции: Источник $\\triangleright$, Очереди FIFO, Каналы $K_1..K_5$, Маршрутизация",
+            ha="center", va="center", fontsize=9.5, style="italic", color="#475569")
+
+    # 1. Входной треугольник (Источник заявок - Slide 6)
+    tri_x = [0.3, 0.3, 1.1]
+    tri_y = [4.6, 3.8, 4.2]
     triangle = patches.Polygon(xy=list(zip(tri_x, tri_y)), closed=True,
-                               facecolor='#FFFFFF', edgecolor=border_color, linewidth=2)
+                               facecolor="#EFF6FF", edgecolor=border_color, linewidth=2)
     ax.add_patch(triangle)
-    ax.text(0.75, 2.9, 'Входной\nпоток\nпокупателей\n($\\lambda$, Exp)', 
-            ha='center', va='top', fontsize=9, fontweight='bold', color='#334155')
+    ax.text(0.7, 3.4, "Входной поток\nпокупателей\n($\\lambda=1.0$ мин$^{-1}$, Exp)",
+            ha="center", va="top", fontsize=8.5, fontweight="bold", color="#1E293B")
 
-    # Arrow from triangle to Saleroom
-    ax.annotate('', xy=(2.0, 3.7), xytext=(1.1, 3.7),
+    # Стрелка от источника к торговому залу
+    ax.annotate("", xy=(2.0, 4.2), xytext=(1.1, 4.2),
                 arrowprops=dict(arrowstyle="-|>", color=border_color, lw=2, mutation_scale=15))
 
-    # 2. Saleroom / Shopping router box
-    saleroom = patches.FancyBboxPatch((2.0, 2.2), 2.2, 3.0,
+    # 2. Торговый зал / Маршрутизатор корзины
+    saleroom = patches.FancyBboxPatch((2.0, 2.7), 2.2, 3.0,
                                       boxstyle="round,pad=0.1,rounding_size=0.15",
-                                      facecolor='#FFFFFF', edgecolor=border_color, linewidth=2)
+                                      facecolor="#FFFFFF", edgecolor=border_color, linewidth=2)
     ax.add_patch(saleroom)
-    ax.text(3.1, 3.9, 'Торговый зал\n(Saleroom)', ha='center', va='center',
-            fontsize=12, fontweight='bold', color=border_color)
-    ax.text(3.1, 2.9, 'Выбор корзины\nотделов и\nмаршрутизация', ha='center', va='center',
-            fontsize=9, color='#64748B')
+    ax.text(3.1, 4.7, "ТОРГОВЫЙ ЗАЛ\n(Saleroom)", ha="center", va="center",
+            fontsize=11, fontweight="bold", color="#1E293B")
+    ax.text(3.1, 3.6, "Генерация списка\nпокупок корзины\n$k \\sim Triang(1, 5, 3)$\nМаршрутизация",
+            ha="center", va="center", fontsize=8.5, color="#475569")
 
-    # Arrow from Saleroom to Department hub
-    ax.annotate('', xy=(4.9, 3.7), xytext=(4.2, 3.7),
+    # Стрелка из торгового зала к отделам
+    ax.annotate("", xy=(4.8, 4.2), xytext=(4.2, 4.2),
                 arrowprops=dict(arrowstyle="-|>", color=border_color, lw=2, mutation_scale=15))
 
-    # Big container box for 5 departments
-    dept_container = patches.FancyBboxPatch((5.0, 0.5), 5.5, 6.5,
-                                           boxstyle="round,pad=0.15,rounding_size=0.2",
-                                           facecolor=bg_box, edgecolor=border_color, linewidth=2, linestyle='--')
+    # Контейнер для 5 параллельных отделов (высота уменьшена, чтобы исключить наложение)
+    dept_container = patches.FancyBboxPatch((4.9, 0.8), 5.6, 6.3,
+                                            boxstyle="round,pad=0.15,rounding_size=0.2",
+                                            facecolor=bg_container, edgecolor=border_color,
+                                            linewidth=1.8, linestyle="--")
     ax.add_patch(dept_container)
-    ax.text(7.75, 6.75, 'Мини-супермаркет: 5 отделов с раздельным обслуживанием',
-            ha='center', va='center', fontsize=11, fontweight='bold', color=border_color)
+    ax.text(7.7, 6.9, "Мини-супермаркет: 5 отделов с раздельным обслуживанием",
+            ha="center", va="center", fontsize=10.0, fontweight="bold", color="#1E293B")
 
-    # 5 Departments info
-    dept_names = [
-        ('Отдел 1: Бакалея', 5.8),
-        ('Отдел 2: Молочный', 4.6),
-        ('Отдел 3: Мясной', 3.4),
-        ('Отдел 4: Овощи/фрукты', 2.2),
-        ('Отдел 5: Кулинария', 1.0)
+    # 5 отделов и их координаты
+    dept_info = [
+        ("Отдел 1: Бакалея", 6.35, "#DBEAFE"),
+        ("Отдел 2: Молочный", 5.15, "#E0E7FF"),
+        ("Отдел 3: Мясной", 3.95, "#FCE7F3"),
+        ("Отдел 4: Овощи/фрукты", 2.75, "#DCFCE7"),
+        ("Отдел 5: Кулинария", 1.55, "#FEF3C7"),
     ]
 
-    for name, y_center in dept_names:
-        # Branch line from Saleroom exit (4.9, 3.7) to department queue entrance
-        ax.plot([4.9, 5.3, 5.3], [3.7, 3.7, y_center], color=border_color, lw=1.5)
-        ax.annotate('', xy=(5.5, y_center), xytext=(5.3, y_center),
+    for name, y_c, bg_color in dept_info:
+        # Линия ветвления от входа отделов к очереди
+        ax.plot([4.8, 5.15, 5.15], [4.2, 4.2, y_c], color=border_color, lw=1.5)
+        ax.annotate("", xy=(5.35, y_c), xytext=(5.15, y_c),
                     arrowprops=dict(arrowstyle="-|>", color=border_color, lw=1.5, mutation_scale=12))
 
-        # Queue symbol (striped box)
-        q_width = 1.0
-        q_height = 0.5
-        q_x = 5.5
-        q_y = y_center - q_height / 2
-        queue_box = patches.Rectangle((q_x, q_y), q_width, q_height,
-                                      facecolor='#FFFFFF', edgecolor=border_color, linewidth=1.5)
+        # Очередь FIFO (полосатый прямоугольник по Слайду 6)
+        q_w, q_h = 0.9, 0.5
+        q_x = 5.35
+        q_y = y_c - q_h / 2
+        queue_box = patches.Rectangle((q_x, q_y), q_w, q_h,
+                                      facecolor="#FFFFFF", edgecolor=border_color, linewidth=1.4)
         ax.add_patch(queue_box)
-        # Vertical stripes inside queue
-        for step in np.linspace(q_x + 0.2, q_x + q_width - 0.2, 4):
-            ax.plot([step, step], [q_y, q_y + q_height], color=border_color, lw=1.5)
+        for s in np.linspace(q_x + 0.18, q_x + q_w - 0.18, 4):
+            ax.plot([s, s], [q_y, q_y + q_h], color=border_color, lw=1.3)
+        ax.text(q_x + q_w / 2, q_y - 0.18, "FIFO", ha="center", va="top", fontsize=6.5, color="#64748B")
 
-        # Arrow from queue to seller terminal
-        ax.annotate('', xy=(7.0, y_center), xytext=(6.5, y_center),
+        # Стрелка от очереди к прибору обслуживания
+        ax.annotate("", xy=(6.7, y_c), xytext=(6.25, y_c),
                     arrowprops=dict(arrowstyle="-|>", color=border_color, lw=1.5, mutation_scale=12))
 
-        # Department / Seller terminal box
-        terminal = patches.FancyBboxPatch((7.0, y_center - 0.35), 3.0, 0.7,
+        # Прибор обслуживания (Канал СМО)
+        serv_w, serv_h = 2.9, 0.72
+        serv_x = 6.7
+        serv_y = y_c - serv_h / 2
+        terminal = patches.FancyBboxPatch((serv_x, serv_y), serv_w, serv_h,
                                           boxstyle="round,pad=0.08,rounding_size=0.1",
-                                          facecolor='#FFFFFF', edgecolor=border_color, linewidth=1.5)
+                                          facecolor=bg_color, edgecolor=border_color, linewidth=1.5)
         ax.add_patch(terminal)
-        ax.text(8.5, y_center + 0.08, name, ha='center', va='center',
-                fontsize=9.5, fontweight='bold', color=border_color)
-        ax.text(8.5, y_center - 0.18, 'Продавец (обслуживание + расчет)', ha='center', va='center',
-                fontsize=7.5, color='#475569')
+        ax.text(serv_x + serv_w / 2, y_c + 0.1, name, ha="center", va="center",
+                fontsize=9, fontweight="bold", color="#0F172A")
+        ax.text(serv_x + serv_w / 2, y_c - 0.16, "1 продавец ($T_{serv} \\sim N(1.8, 0.5)$ мин)",
+                ha="center", va="center", fontsize=7.2, color="#475569")
 
-        # Arrow out from terminal
-        ax.plot([10.0, 10.7, 10.7], [y_center, y_center, 3.7], color=border_color, lw=1.5)
+        # Линия выхода из прибора к вертикальной шине сбора
+        ax.plot([serv_x + serv_w, 10.15], [y_c, y_c], color=border_color, lw=1.5)
 
-    # Reconnection hub after departments:
-    # 1) Loop back arrow to Saleroom (if more departments to visit)
-    ax.annotate('', xy=(3.1, 5.2), xytext=(3.1, 7.2),
-                arrowprops=dict(arrowstyle="-|>", color='#D97706', lw=1.8, mutation_scale=14, linestyle=':'))
-    ax.plot([10.7, 10.7, 3.1], [3.7, 7.2, 7.2], color='#D97706', lw=1.8, linestyle=':')
-    ax.text(6.8, 7.35, 'Переход к следующему отделу из списка покупок',
-            ha='center', va='bottom', fontsize=9, fontweight='bold', color='#B45309')
+    # Вертикальная собирающая шина после всех отделов
+    ax.plot([10.15, 10.15], [1.55, 6.35], color=border_color, lw=1.5)
+    ax.annotate("", xy=(10.7, 4.0), xytext=(10.15, 4.0),
+                arrowprops=dict(arrowstyle="-|>", color=border_color, lw=1.8, mutation_scale=14))
 
-    # 2) Exit arrow (when all chosen departments are visited)
-    ax.annotate('', xy=(12.4, 3.7), xytext=(10.7, 3.7),
-                arrowprops=dict(arrowstyle="-|>", color=border_color, lw=2.2, mutation_scale=16))
-    exit_box = patches.FancyBboxPatch((11.4, 2.8), 1.2, 1.8,
+    # 3. Ромб принятия решений (Маршрутизатор покупок)
+    diamond_pts = [[10.7, 4.0], [11.3, 4.5], [11.9, 4.0], [11.3, 3.5]]
+    diamond = patches.Polygon(diamond_pts, closed=True,
+                              facecolor="#FEF9C3", edgecolor="#CA8A04", linewidth=1.8)
+    ax.add_patch(diamond)
+    ax.text(11.3, 4.0, "Корзина\nпуста?", ha="center", va="center",
+            fontsize=7.8, fontweight="bold", color="#854D0E")
+
+    # Ветка 1: НЕТ -> Возврат к следующему отделу
+    # Аккуратная траектория сверху без пересечения текста
+    ax.annotate("", xy=(3.1, 5.7), xytext=(3.1, 7.6),
+                arrowprops=dict(arrowstyle="-|>", color=amber_loop, lw=1.8, mutation_scale=14, linestyle=":"))
+    ax.plot([11.3, 11.3, 3.1], [4.5, 7.6, 7.6], color=amber_loop, lw=1.8, linestyle=":")
+    ax.text(11.35, 4.9, "НЕТ\n(есть еще отделы)", ha="left", va="bottom",
+            fontsize=8, fontweight="bold", color=amber_loop)
+    ax.text(7.2, 7.72, "Переход к следующему отделу из списка покупок (обратная связь)",
+            ha="center", va="bottom", fontsize=8.5, fontweight="bold", color="#B45309")
+
+    # Ветка 2: ДА -> Выход из магазина
+    ax.annotate("", xy=(12.4, 4.0), xytext=(11.9, 4.0),
+                arrowprops=dict(arrowstyle="-|>", color=border_color, lw=2.0, mutation_scale=15))
+    ax.text(12.15, 4.25, "ДА", ha="center", va="bottom",
+            fontsize=8.5, fontweight="bold", color=green_exit)
+
+    # 4. Блок выхода из системы (Slide 6)
+    exit_box = patches.FancyBboxPatch((12.4, 3.2), 1.8, 1.6,
                                       boxstyle="round,pad=0.1,rounding_size=0.15",
-                                      facecolor='#DCFCE7', edgecolor='#16A34A', linewidth=2)
+                                      facecolor=green_bg, edgecolor=green_exit, linewidth=2)
     ax.add_patch(exit_box)
-    ax.text(12.0, 3.7, 'ВЫХОД\nиз\nмагазина\n(с покупками)', ha='center', va='center',
-            fontsize=9.5, fontweight='bold', color='#15803D')
+    ax.text(13.3, 4.0, "ВЫХОД\nиз магазина\n(с покупками)", ha="center", va="center",
+            fontsize=9.5, fontweight="bold", color="#15803D")
+
+    # 5. Легенда элементов СМО внизу
+    legend_card = patches.FancyBboxPatch((0.2, 0.1), 14.1, 0.55,
+                                         boxstyle="round,pad=0.08,rounding_size=0.1",
+                                         facecolor="#F1F5F9", edgecolor="#CBD5E1", linewidth=1)
+    ax.add_patch(legend_card)
+    legend_text = (
+        "Условные обозначения (по Слайду 6):   "
+        "$\\triangleright$ — Источник заявок (входной поток)   |   "
+        "FIFO — Накопитель / буфер очереди   |   "
+        "Канал — Прибор обслуживания (продавец)   |   "
+        "$\\diamond$ — Узел маршрутизации   |   "
+        "$\\rightarrow$ — Потоки заявок"
+    )
+    ax.text(7.25, 0.37, legend_text, ha="center", va="center", fontsize=8, color="#334155")
 
     plt.tight_layout()
-    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"Diagram saved to {output_path}")
+    print(f"Схема СМО успешно сохранена в: {output_path}")
+
 
 if __name__ == "__main__":
-    import os
     default_out = os.path.abspath(os.path.join(os.path.dirname(__file__), "plots", "diagram_flow.png"))
     generate_diagram(default_out)

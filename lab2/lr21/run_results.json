@@ -1,14 +1,21 @@
 {
-  "avg_time_in_supermarket": 19.766583250897895,
-  "std_time_in_supermarket": 10.649073041222698,
-  "avg_queue_wait_time": 14.183777414621167,
-  "avg_departments_visited": 3.15625,
-  "avg_total_queue_len": 10.350163117259164,
-  "avg_busy_sellers": 4.073876046439209,
-  "seller_utilization_pct": 81.47752092878419,
-  "avg_buyers_in_supermarket": 14.424039163698366,
-  "total_arrivals": 64,
-  "total_served": 64,
-  "total_transactions": 202,
-  "simulation_end_time": 87.7050674710661
+  "avg_time_in_supermarket": 19.459364764201254,
+  "std_time_in_supermarket": 10.034305096718343,
+  "avg_queue_wait_time": 13.817949381367171,
+  "avg_departments_visited": 3.164705882352941,
+  "avg_total_queue_len": 10.585666936789622,
+  "avg_busy_sellers": 4.321780507843656,
+  "seller_utilization_pct": 86.43561015687314,
+  "dept_utilizations": [
+    0.8853395024578318,
+    0.8830119477127204,
+    0.8398793173624729,
+    0.8155682907773539,
+    0.8979814495332775
+  ],
+  "avg_buyers_in_supermarket": 14.907447444633279,
+  "total_arrivals": 255,
+  "total_served": 255,
+  "total_transactions": 807,
+  "simulation_end_time": 332.863022546338
 }
