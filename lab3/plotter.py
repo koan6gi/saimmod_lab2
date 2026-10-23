@@ -346,8 +346,13 @@ def plot_task_1_5(
     ax2.set_xticks([1, 2])
     ax2.set_xticklabels([f"Повторные реплики\n(N={n_rep}, T={batch_size:.0f} мин)",
                          f"Непрерывный прогон\n(M={n_batches}, T={batch_size:.0f} мин)"], fontsize=9.5)
-    ax2.set_title(f"Сравнение методов: репликации vs батчи\n|t| = {abs(t_stat_comp):.2f} < t_кр = {t_crit_comp:.2f} (p = {t_p_comp:.3f})\nF = {f_stat:.2f} < F_кр = {f_crit:.2f} (дисперсии равны)",
-                  fontsize=9.5, fontweight="bold")
+    t_op = "<" if abs(t_stat_comp) < t_crit_comp else ">"
+    t_conclusion = "средние равны" if abs(t_stat_comp) < t_crit_comp else "средние различаются"
+    f_op = "<" if f_stat < f_crit else ">"
+    f_conclusion = "дисперсии равны" if f_stat < f_crit else "дисперсии не равны"
+
+    ax2.set_title(f"Сравнение методов: репликации vs батчи\n|t| = {abs(t_stat_comp):.2f} {t_op} t_кр = {t_crit_comp:.2f} ({t_conclusion}, p = {t_p_comp:.3f})\nF = {f_stat:.2f} {f_op} F_кр = {f_crit:.2f} ({f_conclusion})",
+                  fontsize=9.0, fontweight="bold")
     ax2.set_ylabel("T_sys (минуты)", fontsize=9.5)
     ax2.grid(True, linestyle="--", alpha=0.5)
     ax2.legend(loc="upper right", fontsize=8.0)
