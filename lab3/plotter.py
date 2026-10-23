@@ -384,10 +384,10 @@ def plot_task_1_6(
     # Subplot A: T_arr чувствительность
     ax1.plot(grid_arr, responses_arr, marker="o", color="#2E86C1", linewidth=2.0, label="Отклик T_sys(x)")
     ax1.axhline(y_base_arr, color="#1F4E79", linestyle="--", linewidth=1.5, label=f"Базовый y₀ = {y_base_arr:.2f} мин")
-    ax1.axhspan(y_base_arr - d_allow_arr / 2.0, y_base_arr + d_allow_arr / 2.0,
-                color="#D5F5E3", alpha=0.45, label=f"Коридор несущественности d = {d_allow_arr:.2f} мин")
+    ax1.axhspan(y_base_arr - d_allow_arr, y_base_arr + d_allow_arr,
+                color="#D5F5E3", alpha=0.45, label=f"Коридор несущественности (±5%): ±{d_allow_arr:.2f} мин")
 
-    ax1.set_title(f"Чувствительность к вариациям T_arr\n(погрешность измерения ±{dx_arr:.2f} мин)", fontsize=10.5, fontweight="bold")
+    ax1.set_title(f"Чувствительность к вариациям T_arr\n(погрешность измерения ±{dx_arr:.3f} мин)", fontsize=10.5, fontweight="bold")
     ax1.set_xlabel("Интервал поступления T_arr (мин)", fontsize=9.5)
     ax1.set_ylabel("T_sys (минуты)", fontsize=9.5)
     ax1.set_xticks(grid_arr)
@@ -397,10 +397,10 @@ def plot_task_1_6(
     # Subplot B: T_serv чувствительность
     ax2.plot(grid_serv, responses_serv, marker="s", color="#E67E22", linewidth=2.0, label="Отклик T_sys(x)")
     ax2.axhline(y_base_serv, color="#B9770E", linestyle="--", linewidth=1.5, label=f"Базовый y₀ = {y_base_serv:.2f} мин")
-    ax2.axhspan(y_base_serv - d_allow_serv / 2.0, y_base_serv + d_allow_serv / 2.0,
-                color="#FCF3CF", alpha=0.45, label=f"Коридор несущественности d = {d_allow_serv:.2f} мин")
+    ax2.axhspan(y_base_serv - d_allow_serv, y_base_serv + d_allow_serv,
+                color="#FCF3CF", alpha=0.45, label=f"Коридор несущественности (±5%): ±{d_allow_serv:.2f} мин")
 
-    ax2.set_title(f"Чувствительность к времени обслуживания μ_serv\n(погрешность измерения ±{dx_serv:.2f} мин)", fontsize=10.5, fontweight="bold")
+    ax2.set_title(f"Чувствительность к времени обслуживания μ_serv\n(погрешность измерения ±{dx_serv:.3f} мин)", fontsize=10.5, fontweight="bold")
     ax2.set_xlabel("Среднее время обслуживания μ_serv (мин)", fontsize=9.5)
     ax2.set_ylabel("T_sys (минуты)", fontsize=9.5)
     ax2.set_xticks(grid_serv)
