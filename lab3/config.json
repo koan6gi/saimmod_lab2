@@ -35,7 +35,7 @@
   },
   "task_1_4": {
     "description": "Уменьшение времени прогона с исключением переходного периода (warm-up)",
-    "warmup_time": 25.0,
+    "warmup_time": 75.0,
     "t0_long": 600.0,
     "t1_short": 300.0,
     "n_sample": 30,
@@ -44,7 +44,7 @@
   },
   "task_1_5": {
     "description": "Опыт с единым непрерывным прогоном (метод батчей / Batch Means)",
-    "warmup_time": 25.0,
+    "warmup_time": 75.0,
     "batch_size": 200.0,
     "n_batches": 30,
     "seed_cont": 7777,
