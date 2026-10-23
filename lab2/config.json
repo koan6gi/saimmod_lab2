@@ -21,7 +21,7 @@
       "Кулинария"
     ],
     "service_time": {
-      "mean": 1.8,
+      "mean": 1.4,
       "std": 0.5,
       "min_time": 0.4
     },
