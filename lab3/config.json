@@ -1,0 +1,65 @@
+{
+  "supermarket": {
+    "num_departments": 5,
+    "department_names": [
+      "Бакалея",
+      "Молочный",
+      "Мясной",
+      "Овощи и фрукты",
+      "Кулинария"
+    ],
+    "mean_arrival_interval": 1.0,
+    "service_mean": 1.4,
+    "service_std": 0.5,
+    "service_min": 0.4
+  },
+  "task_1_1": {
+    "description": "Проверка нормальности отклика T_sys по критерию хи-квадрат Пирсона",
+    "n_reps": 180,
+    "sim_time": 800.0,
+    "seed_start": 10000
+  },
+  "task_1_2": {
+    "description": "Точечные и интервальные оценки (Стьюдент vs Уиллинк, alpha=0.05)",
+    "n_reps": 20,
+    "sim_time": 300.0,
+    "alpha": 0.05,
+    "seed_start": 2000
+  },
+  "task_1_3": {
+    "description": "Оценка зависимости точности имитации от количества прогонов (поиск N_5%)",
+    "max_runs": 120,
+    "sim_time": 300.0,
+    "target_error_pct": 5.0,
+    "seed_start": 2000
+  },
+  "task_1_4": {
+    "description": "Уменьшение времени прогона с исключением переходного периода (warm-up)",
+    "warmup_time": 25.0,
+    "t0_long": 600.0,
+    "t1_short": 300.0,
+    "n_sample": 30,
+    "seed_start_0": 5000,
+    "seed_start_1": 6000
+  },
+  "task_1_5": {
+    "description": "Опыт с единым непрерывным прогоном (метод батчей / Batch Means)",
+    "warmup_time": 25.0,
+    "batch_size": 200.0,
+    "n_batches": 30,
+    "seed_cont": 7777,
+    "seed_rep_bench": 8000
+  },
+  "task_1_6": {
+    "description": "Оценка чувствительности отклика к вариациям параметров (5-точечный план)",
+    "n_runs_per_pt": 30,
+    "sim_time": 300.0,
+    "tolerance_pct": 5.0,
+    "arr_x0": 1.0,
+    "arr_dx": 0.002,
+    "serv_x0": 1.4,
+    "serv_dx": 0.001,
+    "seed_start_arr": 9000,
+    "seed_start_serv": 9500
+  }
+}
