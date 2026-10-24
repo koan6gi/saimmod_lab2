@@ -659,15 +659,16 @@ def solve_task_1_6(raw_cfg: Dict[str, Any], plots_dir: str) -> Dict[str, Any]:
     print("ЗАДАЧА 1.6: ОЦЕНКА ЧУВСТВИТЕЛЬНОСТИ И ДОСТАТОЧНАЯ ТОЧНОСТЬ ЗАДАНИЯ ПЕРЕМЕННЫХ")
     print("=" * 78)
 
-    n_runs_per_pt = int(task_cfg.get("n_runs_per_pt", 30))
-    sim_time = float(task_cfg.get("sim_time", 300.0))
+    n_runs_per_pt = int(task_cfg.get("n_runs_per_pt", 60))
+    sim_time = float(task_cfg.get("sim_time", 375.0))
+    warmup_time = float(task_cfg.get("warmup_time", 75.0))
     tol_pct = float(task_cfg.get("tolerance_pct", 5.0)) / 100.0
 
     # Фактор 1: Интервал прихода покупателей T_arr
     x0_arr = float(task_cfg.get("arr_x0", 1.0))
-    dx_arr = float(task_cfg.get("arr_dx", 0.02))
+    dx_arr = float(task_cfg.get("arr_dx", 0.01))
     grid_arr = [round(x0_arr + i * dx_arr, 3) for i in [-2, -1, 0, 1, 2]]
-    seed_arr = int(task_cfg.get("seed_start_arr", 9000))
+    seed_arr = int(task_cfg.get("seed_start_arr", 9500))
 
     print(f"1) Варьирование интервала прихода T_arr по 5 точкам: {grid_arr} мин...")
     resp_arr = []
@@ -678,6 +679,7 @@ def solve_task_1_6(raw_cfg: Dict[str, Any], plots_dir: str) -> Dict[str, Any]:
             sc.mean_arrival_interval = x_val
             cfg = SimulationConfig(
                 simulation_time=sim_time,
+                warmup_time=warmup_time,
                 rng_seed=seed_arr + s,
                 supermarket=sc
             )
@@ -693,9 +695,9 @@ def solve_task_1_6(raw_cfg: Dict[str, Any], plots_dir: str) -> Dict[str, Any]:
 
     # Фактор 2: Время обслуживания mu_serv
     x0_serv = float(task_cfg.get("serv_x0", 1.4))
-    dx_serv = float(task_cfg.get("serv_dx", 0.002))
+    dx_serv = float(task_cfg.get("serv_dx", 0.01))
     grid_serv = [round(x0_serv + i * dx_serv, 4) for i in [-2, -1, 0, 1, 2]]
-    seed_serv = int(task_cfg.get("seed_start_serv", 9500))
+    seed_serv = int(task_cfg.get("seed_start_serv", 9000))
 
     print(f"2) Варьирование времени обслуживания mu_serv по 5 точкам: {grid_serv} мин...")
     resp_serv = []
@@ -706,6 +708,7 @@ def solve_task_1_6(raw_cfg: Dict[str, Any], plots_dir: str) -> Dict[str, Any]:
             sc.service_time.mean = x_val
             cfg = SimulationConfig(
                 simulation_time=sim_time,
+                warmup_time=warmup_time,
                 rng_seed=seed_serv + s,
                 supermarket=sc
             )

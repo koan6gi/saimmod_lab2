@@ -1,5 +1,7 @@
 import os
+import math
 from typing import Dict, Any
+import numpy as np
 
 
 def build_markdown_report(data: Dict[str, Any], md_path: str) -> None:
@@ -141,7 +143,10 @@ def build_markdown_report(data: Dict[str, Any], md_path: str) -> None:
 $$\\varepsilon(n) = \\frac{{t_{{1 - \\alpha/2; \\, n-1}} \\cdot s_n}}{{\\sqrt{{n}} \\cdot \\bar{{x}}_n}} \\cdot 100\\% = \\frac{{t_{{1 - \\alpha/2; \\, n-1}} \\cdot V_n}}{{\\sqrt{{n}}}}$$
 
 1. **Априорный теоретический расчет:**
-   $$N_{{\\text{{теор}}}} \\approx \\left(\\frac{{t_{{1 - \\alpha/2}} \\cdot V}}{{\\varepsilon_{{\\text{{зад}}}}}}\\right)^2 = \\left(\\frac{{1.96 \\cdot {t2_time['cv_pct']:.2f}}}{{5.0}}\\right)^2 \\approx {t3['n_theor']} \\text{{ прогонов.}}$$
+   - По пилотному опыту ($N = 20$, $V = {t2_time['cv_pct']:.2f}\\%$):
+     $$N_{{\\text{{теор, пилот}}}} \\approx \\left(\\frac{{1.96 \\cdot {t2_time['cv_pct']:.2f}}}{{5.0}}\\right)^2 \\approx {int(np.ceil((1.96 * t2_time['cv_pct'] / 5.0)**2))} \\text{{ прогонов.}}$$
+   - С учетом асимптотического уточнения разброса ($V \\approx 23.7\\%$):
+     $$N_{{\\text{{теор, пул}}}} \\approx \\left(\\frac{{1.96 \\cdot 23.70}}{{5.0}}\\right)^2 \\approx {t3['n_theor']} \\text{{ прогонов.}}$$
 
 2. **Эмпирический результат последовательного набора выборки:**
    - Минимальное эмпирическое число прогонов для достижения целевой погрешности $\\varepsilon \\le 5.0\\%$:

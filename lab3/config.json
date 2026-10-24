@@ -52,14 +52,15 @@
   },
   "task_1_6": {
     "description": "Оценка чувствительности отклика к вариациям параметров (5-точечный план)",
-    "n_runs_per_pt": 30,
-    "sim_time": 300.0,
+    "n_runs_per_pt": 60,
+    "sim_time": 375.0,
+    "warmup_time": 75.0,
     "tolerance_pct": 5.0,
     "arr_x0": 1.0,
-    "arr_dx": 0.002,
+    "arr_dx": 0.01,
     "serv_x0": 1.4,
-    "serv_dx": 0.001,
-    "seed_start_arr": 9000,
+    "serv_dx": 0.01,
+    "seed_start_arr": 9500,
     "seed_start_serv": 9500
   }
 }
